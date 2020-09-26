@@ -44,6 +44,9 @@ public class MainViewModel extends ViewModel {
     //Managers update(Suspend/approve) from HQ result
     MutableLiveData<ResponseInfo<User>> updateResult = new MutableLiveData<>();
 
+    //Manager approved price result observable
+    MutableLiveData<ResponseInfo<Approval>> approvedPrice = new MutableLiveData<>();
+
     private FirebaseFirestore firestore;
 
     public MainViewModel() {
@@ -80,6 +83,10 @@ public class MainViewModel extends ViewModel {
 
     public MutableLiveData<ResponseInfo<User>> getUpdateResult() {
         return updateResult;
+    }
+
+    public MutableLiveData<ResponseInfo<Approval>> getApprovedPrice() {
+        return approvedPrice;
     }
 
     public void setPrice(Price price) {
@@ -288,6 +295,32 @@ public class MainViewModel extends ViewModel {
             @Override
             public void onFailure(@NonNull Exception e) {
                 updateResult.setValue(new ResponseInfo<User>(true, e.getMessage()));
+            }
+        });
+    }
+
+    public void myApprovedPrice(String id) {
+
+        CollectionReference ref = firestore.collection("approvals");
+        ref.get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+            @Override
+            public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                Approval approval = null;
+                if (task.isSuccessful() && task.getResult().size() > 0) {
+                    for (DocumentSnapshot snapshot: task.getResult()) {
+                        approval = snapshot.toObject(Approval.class);
+                        if (approval != null) break;
+                    }
+                    approvedPrice.setValue(new ResponseInfo<Approval>(false, approval));
+                }
+                else {
+                    approvedPrice.setValue(new ResponseInfo<Approval>(true, "Price not Fetched"));
+                }
+            }
+        }).addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception e) {
+
             }
         });
     }

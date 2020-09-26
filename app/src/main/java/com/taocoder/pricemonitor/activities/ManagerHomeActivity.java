@@ -18,6 +18,7 @@ import android.widget.TextView;
 import com.google.android.material.navigation.NavigationView;
 import com.google.firebase.auth.FirebaseAuth;
 import com.taocoder.pricemonitor.R;
+import com.taocoder.pricemonitor.fragments.ApprovedPriceFragment;
 import com.taocoder.pricemonitor.fragments.CompetitorPricesFragment;
 import com.taocoder.pricemonitor.fragments.ManagerHomeFragment;
 import com.taocoder.pricemonitor.fragments.RequestApprovalFragment;
@@ -108,6 +109,13 @@ public class ManagerHomeActivity extends AppCompatActivity implements OnFragment
                     }
                     break;
 
+                case R.id.approved:
+                    if (!pageName.equalsIgnoreCase("approved")) {
+                        pageName = "approved";
+                        changeFragment(new ApprovedPriceFragment(), true);
+                    }
+                    break;
+
                 case R.id.logout:
                     FirebaseAuth.getInstance().signOut();
                     SessionManager sessionManager = SessionManager.getInstance(getApplicationContext());
@@ -119,7 +127,6 @@ public class ManagerHomeActivity extends AppCompatActivity implements OnFragment
                     finish();
                     break;
             }
-
             drawerLayout.closeDrawers();
             return true;
         }

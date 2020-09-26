@@ -47,24 +47,28 @@
             android:layout_centerHorizontal="true"/>
 
         <TextView
+            android:id="@+id/desc"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="(Integrated Solution-Process Automation)"
             android:textColor="@color/white"
             android:layout_below="@id/caption"
             android:layout_centerHorizontal="true"/>
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/hq"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            app:cornerRadius="@dimen/_10sdp"
+            android:paddingLeft="@dimen/_20sdp"
+            android:paddingRight="@dimen/_20sdp"
+            app:backgroundTint="@color/colorPrimaryDark"
+            android:textColor="@color/white"
+            android:layout_below="@id/desc"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="@dimen/_25sdp"
+            android:text="Continue" />
     </RelativeLayout>
 
-    <com.google.android.material.button.MaterialButton
-        android:id="@+id/hq"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center"
-        app:cornerRadius="@dimen/_16sdp"
-        app:backgroundTint="@color/gray"
-        android:textColor="@color/dark"
-        android:layout_alignParentBottom="true"
-        android:layout_centerHorizontal="true"
-        android:text="Continue"
-        android:layout_margin="@dimen/_16sdp"/>
 </RelativeLayout>

@@ -16,9 +16,8 @@
             android:title="Competitor Prices"
             android:icon="@drawable/ic_baseline_money" />
 
-        <item android:id="@+id/sent"
-            android:visible="false"
-            android:title="Approval Sent" />
+        <item android:id="@+id/approved"
+            android:title="Approved Price" />
     </group>
 
     <item

@@ -28,9 +28,8 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Request Price Approval"
-            android:layout_gravity="center"
             android:textAppearance="@style/TextAppearance.MaterialComponents.Body1"
-            android:layout_marginBottom="@dimen/_16sdp"/>
+            android:layout_marginBottom="@dimen/_18sdp"/>
 
         <com.google.android.material.textfield.TextInputLayout
             android:id="@+id/box"
