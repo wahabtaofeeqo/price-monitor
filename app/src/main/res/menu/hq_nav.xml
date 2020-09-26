@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <group android:id="@+id/one" >
+        <item android:id="@+id/home"
+            android:icon="@drawable/ic_baseline_home"
+            android:checked="true"
+            android:title="@string/home" />
+
+        <item android:id="@+id/addresses"
+            android:title="View Addresses" />
+
+        <item android:id="@+id/address"
+            android:visible="false"
+            android:title="Add Address" />
+    </group>
+
+    <group android:id="@+id/top">
+
+        <item android:id="@+id/competitors"
+            android:title="Competitor Prices"
+            android:icon="@drawable/ic_baseline_money" />
+
+        <item android:id="@+id/replied"
+            android:title="Replied Approvals" />
+
+        <item android:id="@+id/pending"
+            android:title="Pending Approvals" />
+    </group>
+
+    <group android:id="@+id/bottom">
+        <item android:id="@+id/managers"
+            android:title="Managers" />
+    </group>
+
+    <item
+        android:id="@+id/logout"
+        android:title="Logout" />
+</menu>

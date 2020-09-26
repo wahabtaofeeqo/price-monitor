@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "733974001729",
+    "firebase_url": "https://price-manager-e4e3a.firebaseio.com",
+    "project_id": "price-manager-e4e3a",
+    "storage_bucket": "price-manager-e4e3a.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:733974001729:android:a29cfec547d34e75746ec0",
+        "android_client_info": {
+          "package_name": "com.taocoder.pricemonitor"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "733974001729-8thru0jqg788fs14rmq6l3p60liskor6.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCMwubZNdvy-GkOjAkP5O4lMAaN-U_Dh0g"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "733974001729-8thru0jqg788fs14rmq6l3p60liskor6.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

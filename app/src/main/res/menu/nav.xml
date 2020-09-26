@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <group android:id="@+id/one" >
+        <item android:id="@+id/home"
+            android:icon="@drawable/ic_baseline_home"
+            android:checked="true"
+            android:title="@string/home" />
+
+        <item android:id="@+id/request"
+            android:title="@string/request_approval" />
+    </group>
+
+    <group android:id="@+id/top">
+        <item android:id="@+id/prices"
+            android:title="Competitor Prices"
+            android:icon="@drawable/ic_baseline_money" />
+
+        <item android:id="@+id/sent"
+            android:visible="false"
+            android:title="Approval Sent" />
+    </group>
+
+    <item
+        android:id="@+id/logout"
+        android:title="Logout" />
+</menu>
