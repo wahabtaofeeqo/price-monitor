@@ -123,7 +123,6 @@ public class RegisterFragment extends Fragment implements Validator.ValidationLi
                     Utils.toastMessage(getContext(), userResponseInfo.getMessage());
                 }
                 else {
-
                     String accountType = type.getText().toString().trim();
                     sessionManager.setEmail(email.getText().toString().trim());
                     sessionManager.setType(accountType);
@@ -134,6 +133,8 @@ public class RegisterFragment extends Fragment implements Validator.ValidationLi
                         startActivity(new Intent(getContext(), ManagerHomeActivity.class));
                     else
                         startActivity(new Intent(getContext(), MainActivity.class));
+
+                    getActivity().finish();
                 }
 
                 create.setEnabled(true);

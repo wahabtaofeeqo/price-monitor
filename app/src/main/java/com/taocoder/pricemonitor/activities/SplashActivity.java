@@ -38,6 +38,7 @@ public class SplashActivity extends AppCompatActivity {
 
             if (user == null) {
                 startActivity(intent);
+                finish();
             }
             else {
                 if (type.equalsIgnoreCase("manager")) {
@@ -54,17 +55,20 @@ public class SplashActivity extends AppCompatActivity {
                                         else {
                                             startActivity(new Intent(SplashActivity.this, ManagerHomeActivity.class));
                                         }
+
+                                        finish();
                                     }
                                 }
                             }
                         }
                     });
                 }
-                else
+                else {
+
                     startActivity(new Intent(this, MainActivity.class));
+                    finish();
+                }
             }
         }
-
-        finish();
     }
 }
