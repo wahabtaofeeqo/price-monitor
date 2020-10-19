@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<menu xmlns:android="http://schemas.android.com/apk/res/android">
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <group android:id="@+id/one" >
         <item android:id="@+id/home"
@@ -8,7 +9,7 @@
             android:title="@string/home" />
 
         <item android:id="@+id/addresses"
-            android:title="View Addresses" />
+            android:title="Station Addresses" />
 
         <item android:id="@+id/address"
             android:visible="false"
@@ -30,7 +31,12 @@
 
     <group android:id="@+id/bottom">
         <item android:id="@+id/managers"
+            android:icon="@drawable/ic_baseline_person"
+            app:iconTint="@color/white"
             android:title="Managers" />
+
+        <item android:id="@+id/addManager"
+            android:title="New Manager" />
     </group>
 
     <item

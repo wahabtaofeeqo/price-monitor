@@ -19,4 +19,13 @@
         android:gravity="center"
         android:layout_height="wrap_content"
         android:layout_weight="1" />
+
+    <ImageButton
+        android:id="@+id/map"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:padding="@dimen/_16sdp"
+        android:background="@android:color/transparent"
+        android:src="@drawable/ic_baseline_map"
+        android:tint="@color/colorAccent" />
 </LinearLayout>

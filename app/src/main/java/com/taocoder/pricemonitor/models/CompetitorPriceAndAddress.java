@@ -1,11 +1,13 @@
 package com.taocoder.pricemonitor.models;
 
-public class Price {
+public class CompetitorPriceAndAddress {
 
     private String userId;
     private String address;
     private String volume;
     private String date;
+    private double latitude;
+    private double longitude;
 
     public String getUserId() {
         return userId;
@@ -37,5 +39,21 @@ public class Price {
 
     public void setDate(String date) {
         this.date = date;
+    }
+
+    public double getLatitude() {
+        return latitude;
+    }
+
+    public void setLatitude(double latitude) {
+        this.latitude = latitude;
+    }
+
+    public double getLongitude() {
+        return longitude;
+    }
+
+    public void setLongitude(double longitude) {
+        this.longitude = longitude;
     }
 }

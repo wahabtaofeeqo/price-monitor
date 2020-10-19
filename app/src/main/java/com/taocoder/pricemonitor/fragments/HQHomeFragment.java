@@ -36,11 +36,10 @@ import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.material.button.MaterialButton;
 import com.google.android.material.textfield.TextInputEditText;
-import com.mobsandgeeks.saripaar.Validator;
 import com.mobsandgeeks.saripaar.annotation.NotEmpty;
 import com.taocoder.pricemonitor.R;
 import com.taocoder.pricemonitor.helpers.Utils;
-import com.taocoder.pricemonitor.models.ResponseInfo;
+import com.taocoder.pricemonitor.models.ServerResponse;
 import com.taocoder.pricemonitor.models.StationAddress;
 import com.taocoder.pricemonitor.viewModels.MainViewModel;
 
@@ -132,8 +131,6 @@ public class HQHomeFragment extends Fragment {
         providerClient = LocationServices.getFusedLocationProviderClient(getContext());
 
         viewModel = new ViewModelProvider(requireActivity()).get(MainViewModel.class);
-
-        startLocationUpdate();
     }
 
     @Override
@@ -165,13 +162,13 @@ public class HQHomeFragment extends Fragment {
             }
         });
 
-        viewModel.getAddressResult().observe(requireActivity(), new Observer<ResponseInfo<StationAddress>>() {
+        viewModel.getAddressResult().observe(requireActivity(), new Observer<ServerResponse<StationAddress>>() {
             @Override
-            public void onChanged(ResponseInfo<StationAddress> stationAddressResponseInfo) {
-                if (stationAddressResponseInfo ==  null) return;
+            public void onChanged(ServerResponse<StationAddress> stationAddressServerResponse) {
+                if (stationAddressServerResponse ==  null) return;
 
-                if (stationAddressResponseInfo.isError()) {
-                    Utils.toastMessage(getContext(), stationAddressResponseInfo.getMessage());
+                if (stationAddressServerResponse.isError()) {
+                    Utils.toastMessage(getContext(), stationAddressServerResponse.getMessage());
                 }
                 else {
                     Utils.toastMessage(getContext(), "Address added");

@@ -8,6 +8,7 @@ import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -19,6 +20,7 @@ import com.taocoder.pricemonitor.adapters.ApprovalsStatusAdapter;
 import com.taocoder.pricemonitor.helpers.Utils;
 import com.taocoder.pricemonitor.models.Approval;
 import com.taocoder.pricemonitor.models.ApprovalsResult;
+import com.taocoder.pricemonitor.models.ServerResponse;
 import com.taocoder.pricemonitor.viewModels.MainViewModel;
 
 import java.util.ArrayList;
@@ -29,12 +31,15 @@ import java.util.List;
  * Use the {@link PendingApprovalFragment#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class PendingApprovalFragment extends Fragment {
+public class PendingApprovalFragment extends Fragment implements ApprovalsStatusAdapter.OnApprovalClickListener {
 
     private List<Approval> approvals;
     private ApprovalsStatusAdapter adapter;
 
     private MainViewModel viewModel;
+
+    int position;
+    Approval approval;
 
     public PendingApprovalFragment() {
         // Required empty public constructor
@@ -62,6 +67,7 @@ public class PendingApprovalFragment extends Fragment {
 
         approvals = new ArrayList<>();
         adapter = new ApprovalsStatusAdapter(getContext(), approvals);
+        adapter.setClickListener(this);
         RecyclerView recyclerView = rootView.findViewById(R.id.recycler);
         recyclerView.addItemDecoration(new DividerItemDecoration(getContext(), DividerItemDecoration.VERTICAL));
         recyclerView.setAdapter(adapter);
@@ -78,12 +84,35 @@ public class PendingApprovalFragment extends Fragment {
                     Utils.toastMessage(getContext(), approvalsResult.getMessage());
                 }
                 else {
+                    approvals.clear();
                     approvals.addAll(approvalsResult.getApprovals());
                     adapter.notifyDataSetChanged();
                 }
             }
         });
 
+        viewModel.getApprovedResult().observe(requireActivity(), new Observer<ServerResponse<Boolean>>() {
+            @Override
+            public void onChanged(ServerResponse<Boolean> serverResponse) {
+                if (serverResponse == null) return;
+
+                if (serverResponse.isError())
+                    Utils.toastMessage(getContext(), serverResponse.getMessage());
+                else {
+                    approvals.remove(position);
+                    adapter.notifyDataSetChanged();
+                    Utils.toastMessage(getContext(), "Approved");
+                }
+            }
+        });
+
         return rootView;
+    }
+
+    @Override
+    public void onApprove(int pos, Approval approval) {
+        this.position = pos;
+        this.approval = approval;
+        viewModel.approve(approval.getId());
     }
 }

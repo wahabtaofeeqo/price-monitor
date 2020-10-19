@@ -27,7 +27,8 @@
             android:id="@+id/text"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Request Price Approval"
+            android:text="Price / Volume"
+            android:textStyle="bold"
             android:textAppearance="@style/TextAppearance.MaterialComponents.Body1"
             android:layout_marginBottom="@dimen/_18sdp"/>
 

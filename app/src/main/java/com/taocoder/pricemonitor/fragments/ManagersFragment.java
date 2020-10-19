@@ -15,10 +15,10 @@ import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 
 import com.taocoder.pricemonitor.R;
-import com.taocoder.pricemonitor.adapters.ApprovalsStatusAdapter;
 import com.taocoder.pricemonitor.adapters.ManagersAdapter;
+import com.taocoder.pricemonitor.helpers.SessionManager;
 import com.taocoder.pricemonitor.helpers.Utils;
-import com.taocoder.pricemonitor.models.ResponseInfo;
+import com.taocoder.pricemonitor.models.ServerResponse;
 import com.taocoder.pricemonitor.models.User;
 import com.taocoder.pricemonitor.viewModels.MainViewModel;
 
@@ -41,6 +41,8 @@ public class ManagersFragment extends Fragment implements ManagersAdapter.UserCl
     //Object and position of user to update
     private int position;
 
+    SessionManager sessionManager;
+
     public ManagersFragment() {
         // Required empty public constructor
     }
@@ -53,6 +55,7 @@ public class ManagersFragment extends Fragment implements ManagersAdapter.UserCl
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         viewModel = new ViewModelProvider(requireActivity()).get(MainViewModel.class);
+        sessionManager = SessionManager.getInstance(getContext());
     }
 
     @Override
@@ -91,16 +94,16 @@ public class ManagersFragment extends Fragment implements ManagersAdapter.UserCl
             }
         });
 
-        viewModel.getUpdateResult().observe(requireActivity(), new Observer<ResponseInfo<User>>() {
+        viewModel.getUpdateResult().observe(requireActivity(), new Observer<ServerResponse<User>>() {
             @Override
-            public void onChanged(ResponseInfo<User> responseInfo) {
-                if (responseInfo == null) return;
+            public void onChanged(ServerResponse<User> serverResponse) {
+                if (serverResponse == null) return;
 
-                if (responseInfo.isError()) {
-                    Utils.toastMessage(getContext(), responseInfo.getMessage());
+                if (serverResponse.isError()) {
+                    Utils.toastMessage(getContext(), serverResponse.getMessage());
                 }
                 else {
-                    users.set(position, responseInfo.getData());
+                    users.set(position, serverResponse.getData());
                     adapter.notifyDataSetChanged();
                 }
             }
@@ -112,6 +115,6 @@ public class ManagersFragment extends Fragment implements ManagersAdapter.UserCl
     @Override
     public void onUserClick(User u, int p) {
         position = p;
-        viewModel.updateUser(u);
+        viewModel.updateUser(u, sessionManager.getName());
     }
 }

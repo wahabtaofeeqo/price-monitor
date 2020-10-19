@@ -18,6 +18,7 @@ import android.widget.TextView;
 import com.google.android.material.navigation.NavigationView;
 import com.google.firebase.auth.FirebaseAuth;
 import com.taocoder.pricemonitor.R;
+import com.taocoder.pricemonitor.fragments.AddManagerFragment;
 import com.taocoder.pricemonitor.fragments.CompetitorPricesFragment;
 import com.taocoder.pricemonitor.fragments.HQAddressesFragment;
 import com.taocoder.pricemonitor.fragments.HQHomeFragment;
@@ -132,6 +133,13 @@ public class MainActivity extends AppCompatActivity implements OnFragmentChangeL
                     if (!pageName.equalsIgnoreCase("managers")) {
                         pageName = "managers";
                         changeFragment(new ManagersFragment(), true);
+                    }
+                    break;
+
+                case R.id.addManager:
+                    if (!pageName.equalsIgnoreCase("add-manager")) {
+                        pageName = "add-manager";
+                        changeFragment(new AddManagerFragment(), true);
                     }
                     break;
 

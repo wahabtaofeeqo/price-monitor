@@ -6,6 +6,7 @@ import androidx.fragment.app.Fragment;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -15,8 +16,15 @@ import com.google.android.material.button.MaterialButton;
 import com.google.android.material.textfield.TextInputEditText;
 import com.taocoder.pricemonitor.R;
 import com.taocoder.pricemonitor.helpers.Utils;
-import com.taocoder.pricemonitor.models.ResponseInfo;
+import com.taocoder.pricemonitor.models.ServerResponse;
 import com.taocoder.pricemonitor.viewModels.MainViewModel;
+
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.Locale;
+import java.util.concurrent.TimeUnit;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -57,21 +65,32 @@ public class RequestApprovalFragment extends Fragment {
                     price.setError("Enter Price");
                 }
                 else {
+
+                    String today = "";
+
+                    try {
+                        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss", Locale.getDefault());
+                        today = simpleDateFormat.format(new Date());
+                    }
+                    catch (Exception e) {
+
+                    }
+
                     Utils.hideKeyboard(getContext(), request);
                     request.setEnabled(false);
                     progressBar.setVisibility(View.VISIBLE);
-                    viewModel.requestPriceApproval(price.getText().toString());
+                    viewModel.requestPriceApproval(price.getText().toString(), today);
                 }
             }
         });
 
-        viewModel.getApprovalResult().observe(requireActivity(), new Observer<ResponseInfo<Boolean>>() {
+        viewModel.getApprovalResult().observe(requireActivity(), new Observer<ServerResponse<Boolean>>() {
             @Override
-            public void onChanged(ResponseInfo<Boolean> responseInfo) {
-                if (responseInfo == null) return;
+            public void onChanged(ServerResponse<Boolean> serverResponse) {
+                if (serverResponse == null) return;
 
-                if (responseInfo.isError()) {
-                    Utils.toastMessage(getContext(), responseInfo.getMessage());
+                if (serverResponse.isError()) {
+                    Utils.toastMessage(getContext(), serverResponse.getMessage());
                 }
                 else {
                     price.setText("");

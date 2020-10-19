@@ -18,4 +18,6 @@
     <string name="request_approval">Request Approval</string>
     <string name="home">Home</string>
     <string name="type">Account Type</string>
+    <string name="phone">Phone Number</string>
+    <string name="title_activity_location">Map</string>
 </resources>

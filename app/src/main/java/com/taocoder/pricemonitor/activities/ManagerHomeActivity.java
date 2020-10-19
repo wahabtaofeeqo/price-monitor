@@ -21,6 +21,7 @@ import com.taocoder.pricemonitor.R;
 import com.taocoder.pricemonitor.fragments.ApprovedPriceFragment;
 import com.taocoder.pricemonitor.fragments.CompetitorPricesFragment;
 import com.taocoder.pricemonitor.fragments.ManagerHomeFragment;
+import com.taocoder.pricemonitor.fragments.PendingApprovalFragment;
 import com.taocoder.pricemonitor.fragments.RequestApprovalFragment;
 import com.taocoder.pricemonitor.helpers.SessionManager;
 import com.taocoder.pricemonitor.interfaces.OnFragmentChangeListener;
@@ -113,6 +114,13 @@ public class ManagerHomeActivity extends AppCompatActivity implements OnFragment
                     if (!pageName.equalsIgnoreCase("approved")) {
                         pageName = "approved";
                         changeFragment(new ApprovedPriceFragment(), true);
+                    }
+                    break;
+
+                case R.id.pending:
+                    if (!pageName.equalsIgnoreCase("pending")) {
+                        pageName = "pending";
+                        changeFragment(new PendingApprovalFragment(), true);
                     }
                     break;
 

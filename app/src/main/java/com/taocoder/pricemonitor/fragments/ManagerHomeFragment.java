@@ -12,13 +12,11 @@ import android.Manifest;
 import android.app.DatePickerDialog;
 import android.app.ProgressDialog;
 import android.content.pm.PackageManager;
-import android.database.Observable;
 import android.location.Address;
 import android.location.Geocoder;
 import android.location.Location;
 import android.os.Bundle;
 import android.os.Looper;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -46,8 +44,8 @@ import com.mobsandgeeks.saripaar.Validator;
 import com.mobsandgeeks.saripaar.annotation.NotEmpty;
 import com.taocoder.pricemonitor.R;
 import com.taocoder.pricemonitor.helpers.Utils;
-import com.taocoder.pricemonitor.models.Price;
-import com.taocoder.pricemonitor.models.ResponseInfo;
+import com.taocoder.pricemonitor.models.CompetitorPriceAndAddress;
+import com.taocoder.pricemonitor.models.ServerResponse;
 import com.taocoder.pricemonitor.viewModels.MainViewModel;
 
 import java.util.Calendar;
@@ -86,6 +84,7 @@ public class ManagerHomeFragment extends Fragment implements DatePickerDialog.On
     private FusedLocationProviderClient providerClient;
 
     private Geocoder geocoder;
+    private LatLng mLatLng;
 
     private OnMapReadyCallback callback = new OnMapReadyCallback() {
 
@@ -106,6 +105,7 @@ public class ManagerHomeFragment extends Fragment implements DatePickerDialog.On
             map.setOnMapClickListener(new GoogleMap.OnMapClickListener() {
                 @Override
                 public void onMapClick(LatLng latLng) {
+                    mLatLng = latLng;
                     getAddress(latLng);
                 }
             });
@@ -168,13 +168,13 @@ public class ManagerHomeFragment extends Fragment implements DatePickerDialog.On
             }
         });
 
-        viewModel.getPriceResult().observe(requireActivity(), new Observer<ResponseInfo<Price>>() {
+        viewModel.getPriceResult().observe(requireActivity(), new Observer<ServerResponse<CompetitorPriceAndAddress>>() {
             @Override
-            public void onChanged(ResponseInfo<Price> priceResponseInfo) {
-                if (priceResponseInfo == null) return;
+            public void onChanged(ServerResponse<CompetitorPriceAndAddress> priceServerResponse) {
+                if (priceServerResponse == null) return;
 
-                if (priceResponseInfo.isError()) {
-                    Utils.toastMessage(getContext(), priceResponseInfo.getMessage());
+                if (priceServerResponse.isError()) {
+                    Utils.toastMessage(getContext(), priceServerResponse.getMessage());
                 }
                 else {
                     address.setText("");
@@ -210,18 +210,25 @@ public class ManagerHomeFragment extends Fragment implements DatePickerDialog.On
             Utils.toastMessage(getContext(), "Please set the Date.");
         }
         else {
-
             progressDialog.setTitle("Please wait...");
             progressDialog.setCancelable(false);
             progressDialog.show();
 
-            Price price = new Price();
-            price.setVolume(volume.getText().toString().trim());
-            price.setAddress(address.getText().toString().trim());
-            price.setDate(date);
-            price.setUserId(FirebaseAuth.getInstance().getCurrentUser().getUid());
+            CompetitorPriceAndAddress competitorPriceAndAddress = new CompetitorPriceAndAddress();
+            competitorPriceAndAddress.setVolume(volume.getText().toString().trim());
+            competitorPriceAndAddress.setAddress(address.getText().toString().trim());
+            competitorPriceAndAddress.setDate(date);
+            competitorPriceAndAddress.setUserId(FirebaseAuth.getInstance().getCurrentUser().getUid());
+            if (mLatLng != null) {
+                competitorPriceAndAddress.setLatitude(mLatLng.latitude);
+                competitorPriceAndAddress.setLongitude(mLatLng.longitude);
+            }
+            else {
+                competitorPriceAndAddress.setLatitude(0);
+                competitorPriceAndAddress.setLongitude(0);
+            }
 
-            viewModel.setPrice(price);
+            viewModel.setPrice(competitorPriceAndAddress);
         }
     }
 
@@ -239,6 +246,7 @@ public class ManagerHomeFragment extends Fragment implements DatePickerDialog.On
     private void startLocationUpdate() {
 
         createLocationRequest();
+
         if (ActivityCompat.checkSelfPermission(getContext(), Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
             providerClient.requestLocationUpdates(locationRequest, locationCallback, Looper.myLooper());
             if (map != null) {
@@ -269,6 +277,7 @@ public class ManagerHomeFragment extends Fragment implements DatePickerDialog.On
         markerOptions.position(latLng);
 
         if (map != null) {
+            map.clear();
             map.addMarker(markerOptions);
             map.moveCamera(CameraUpdateFactory.newLatLngZoom(latLng, 15.0f));
         }

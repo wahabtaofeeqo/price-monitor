@@ -15,9 +15,9 @@ import com.google.firebase.firestore.QuerySnapshot;
 import com.taocoder.pricemonitor.models.AddressesResult;
 import com.taocoder.pricemonitor.models.Approval;
 import com.taocoder.pricemonitor.models.ApprovalsResult;
-import com.taocoder.pricemonitor.models.Price;
+import com.taocoder.pricemonitor.models.CompetitorPriceAndAddress;
 import com.taocoder.pricemonitor.models.PricesResult;
-import com.taocoder.pricemonitor.models.ResponseInfo;
+import com.taocoder.pricemonitor.models.ServerResponse;
 import com.taocoder.pricemonitor.models.StationAddress;
 import com.taocoder.pricemonitor.models.User;
 
@@ -29,23 +29,34 @@ import java.util.Map;
 public class MainViewModel extends ViewModel {
 
     //Competitors price add result
-    private MutableLiveData<ResponseInfo<Price>> priceResult = new MutableLiveData<>();
+    private MutableLiveData<ServerResponse<CompetitorPriceAndAddress>> priceResult = new MutableLiveData<>();
 
     //Request approval result
-    private MutableLiveData<ResponseInfo<Boolean>> approvalResult = new MutableLiveData<>();
+    private MutableLiveData<ServerResponse<Boolean>> approvalResult = new MutableLiveData<>();
 
     //List of approvals result
     private MutableLiveData<ApprovalsResult> approvals = new MutableLiveData<>();
-    private MutableLiveData<ResponseInfo<StationAddress>> addressResult = new MutableLiveData<>();
+
+    //Adding address result
+    private MutableLiveData<ServerResponse<StationAddress>> addressResult = new MutableLiveData<>();
+
+    //List of addresses result
     private MutableLiveData<AddressesResult> addressesResult = new MutableLiveData<>();
+
+    //Adding competitor address and
     private MutableLiveData<PricesResult> pricesResult = new MutableLiveData<>();
+
+    // List of managers
     private MutableLiveData<List<User>> managers = new MutableLiveData<>();
 
     //Managers update(Suspend/approve) from HQ result
-    MutableLiveData<ResponseInfo<User>> updateResult = new MutableLiveData<>();
+    MutableLiveData<ServerResponse<User>> updateResult = new MutableLiveData<>();
 
     //Manager approved price result observable
-    MutableLiveData<ResponseInfo<Approval>> approvedPrice = new MutableLiveData<>();
+    MutableLiveData<ServerResponse<Approval>> approvedPrice = new MutableLiveData<>();
+
+    //Approve price result
+    MutableLiveData<ServerResponse<Boolean>> approvedResult = new MutableLiveData<>();
 
     private FirebaseFirestore firestore;
 
@@ -53,11 +64,11 @@ public class MainViewModel extends ViewModel {
         firestore = FirebaseFirestore.getInstance();
     }
 
-    public MutableLiveData<ResponseInfo<Price>> getPriceResult() {
+    public MutableLiveData<ServerResponse<CompetitorPriceAndAddress>> getPriceResult() {
         return priceResult;
     }
 
-    public MutableLiveData<ResponseInfo<Boolean>> getApprovalResult() {
+    public MutableLiveData<ServerResponse<Boolean>> getApprovalResult() {
         return approvalResult;
     }
 
@@ -65,7 +76,7 @@ public class MainViewModel extends ViewModel {
         return approvals;
     }
 
-    public MutableLiveData<ResponseInfo<StationAddress>> getAddressResult() {
+    public MutableLiveData<ServerResponse<StationAddress>> getAddressResult() {
         return addressResult;
     }
 
@@ -81,40 +92,48 @@ public class MainViewModel extends ViewModel {
         return managers;
     }
 
-    public MutableLiveData<ResponseInfo<User>> getUpdateResult() {
+    public MutableLiveData<ServerResponse<User>> getUpdateResult() {
         return updateResult;
     }
 
-    public MutableLiveData<ResponseInfo<Approval>> getApprovedPrice() {
+    public MutableLiveData<ServerResponse<Approval>> getApprovedPrice() {
         return approvedPrice;
     }
 
-    public void setPrice(Price price) {
+    public MutableLiveData<ServerResponse<Boolean>> getApprovedResult() {
+        return approvedResult;
+    }
+
+    // Actual action methods
+
+    public void setPrice(CompetitorPriceAndAddress competitorPriceAndAddress) {
         CollectionReference prices = firestore.collection("prices");
-        prices.document().set(price).addOnCompleteListener(new OnCompleteListener<Void>() {
+        prices.document().set(competitorPriceAndAddress).addOnCompleteListener(new OnCompleteListener<Void>() {
             @Override
             public void onComplete(@NonNull Task<Void> task) {
                 if (task.isSuccessful()) {
-                    priceResult.setValue(new ResponseInfo<Price>(false));
+                    priceResult.setValue(new ServerResponse<CompetitorPriceAndAddress>(false));
                 }
                 else {
-                    priceResult.setValue(new ResponseInfo<Price>(true, "Price was not added. try again."));
+                    priceResult.setValue(new ServerResponse<CompetitorPriceAndAddress>(true, "Price was not added. try again."));
                 }
             }
         }).addOnFailureListener(new OnFailureListener() {
             @Override
             public void onFailure(@NonNull Exception e) {
-                priceResult.setValue(new ResponseInfo<Price>(true, e.getMessage()));
+                priceResult.setValue(new ServerResponse<CompetitorPriceAndAddress>(true, e.getMessage()));
             }
         });
     }
 
-    public void requestPriceApproval(String price) {
+    public void requestPriceApproval(String price, String date) {
         CollectionReference ref = firestore.collection("approvals");
         String id = FirebaseAuth.getInstance().getCurrentUser().getUid();
 
         Approval approval = new Approval();
+
         approval.setPrice(Long.parseLong(price));
+        approval.setDate(date);
         approval.setUserId(id);
         approval.setStatus("pending");
         approval.setApproved(false);
@@ -123,16 +142,16 @@ public class MainViewModel extends ViewModel {
             @Override
             public void onComplete(@NonNull Task<Void> task) {
                 if (task.isSuccessful()) {
-                    approvalResult.setValue(new ResponseInfo<Boolean>(false));
+                    approvalResult.setValue(new ServerResponse<Boolean>(false));
                 }
                 else {
-                    approvalResult.setValue(new ResponseInfo<Boolean>(true, "Not sent. try again"));
+                    approvalResult.setValue(new ServerResponse<Boolean>(true, "Not sent. try again"));
                 }
             }
         }).addOnFailureListener(new OnFailureListener() {
             @Override
             public void onFailure(@NonNull Exception e) {
-                approvalResult.setValue(new ResponseInfo<Boolean>(true, e.getMessage()));
+                approvalResult.setValue(new ServerResponse<Boolean>(true, e.getMessage()));
             }
         });
     }
@@ -143,13 +162,13 @@ public class MainViewModel extends ViewModel {
         ref.get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
             @Override
             public void onComplete(@NonNull Task<QuerySnapshot> task) {
-                List<Price> list = new ArrayList<>();
+                List<CompetitorPriceAndAddress> list = new ArrayList<>();
 
                 if (task.isSuccessful() && task.getResult().size() > 0) {
                     for (DocumentSnapshot snapshot: task.getResult()) {
-                        Price price = snapshot.toObject(Price.class);
-                        if (price != null) {
-                            list.add(price);
+                        CompetitorPriceAndAddress competitorPriceAndAddress = snapshot.toObject(CompetitorPriceAndAddress.class);
+                        if (competitorPriceAndAddress != null) {
+                            list.add(competitorPriceAndAddress);
                         }
                     }
 
@@ -167,6 +186,30 @@ public class MainViewModel extends ViewModel {
         });
     }
 
+    public void approve(String id) {
+        CollectionReference ref = firestore.collection("approvals");
+        Map<String, Object> map = new HashMap<>();
+        map.put("status", "replied");
+        map.put("approved", true);
+
+        ref.document(id).update(map).addOnCompleteListener(new OnCompleteListener<Void>() {
+            @Override
+            public void onComplete(@NonNull Task<Void> task) {
+                if (task.isSuccessful()) {
+                    approvedResult.setValue(new ServerResponse<Boolean>(false));
+                }
+                else {
+                    approvedResult.setValue(new ServerResponse<Boolean>(true, "Not Approved. Try again"));
+                }
+            }
+        }).addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception e) {
+                approvalResult.setValue(new ServerResponse<Boolean>(true, e.getMessage()));
+            }
+        });
+    }
+
     public void checkApprovals(String type) {
         CollectionReference ref = firestore.collection("approvals");
 
@@ -179,6 +222,7 @@ public class MainViewModel extends ViewModel {
                     for (DocumentSnapshot snapshot: task.getResult()) {
                         Approval approval = snapshot.toObject(Approval.class);
                         if (approval != null) {
+                            approval.setId(snapshot.getId());
                             list.add(approval);
                         }
                     }
@@ -203,16 +247,16 @@ public class MainViewModel extends ViewModel {
             @Override
             public void onComplete(@NonNull Task<Void> task) {
                 if (task.isSuccessful()) {
-                    addressResult.setValue(new ResponseInfo<StationAddress>(false));
+                    addressResult.setValue(new ServerResponse<StationAddress>(false));
                 }
                 else {
-                    addressResult.setValue(new ResponseInfo<StationAddress>(true, "Address not added. Try again"));
+                    addressResult.setValue(new ServerResponse<StationAddress>(true, "Address not added. Try again"));
                 }
             }
         }).addOnFailureListener(new OnFailureListener() {
             @Override
             public void onFailure(@NonNull Exception e) {
-                addressResult.setValue(new ResponseInfo<StationAddress>(true, e.getMessage()));
+                addressResult.setValue(new ServerResponse<StationAddress>(true, e.getMessage()));
             }
         });
     }
@@ -253,7 +297,7 @@ public class MainViewModel extends ViewModel {
 
         final List<User> list = new ArrayList<>();
 
-        ref.get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+        ref.whereEqualTo("type", "manager").get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
             @Override
             public void onComplete(@NonNull Task<QuerySnapshot> task) {
                 if (task.isSuccessful()) {
@@ -276,25 +320,29 @@ public class MainViewModel extends ViewModel {
         });
     }
 
-    public void updateUser(final User user) {
+    public void updateUser(final User user, String hq) {
         int update = (user.getStatus() == 1) ? 0 : 1;
         user.setStatus(update);
 
         CollectionReference ref = firestore.collection("users");
+        Map<String, Object> map = new HashMap<>();
+        map.put("status", update);
+        map.put("blockedBy", hq);
+
         ref.document(user.getDocID()).update("status", update).addOnCompleteListener(new OnCompleteListener<Void>() {
             @Override
             public void onComplete(@NonNull Task<Void> task) {
                 if (task.isSuccessful()) {
-                    updateResult.setValue(new ResponseInfo<User>(false, user));
+                    updateResult.setValue(new ServerResponse<User>(false, user));
                 }
                 else {
-                    updateResult.setValue(new ResponseInfo<User>(true, "Please try again."));
+                    updateResult.setValue(new ServerResponse<User>(true, "Please try again."));
                 }
             }
         }).addOnFailureListener(new OnFailureListener() {
             @Override
             public void onFailure(@NonNull Exception e) {
-                updateResult.setValue(new ResponseInfo<User>(true, e.getMessage()));
+                updateResult.setValue(new ServerResponse<User>(true, e.getMessage()));
             }
         });
     }
@@ -311,10 +359,10 @@ public class MainViewModel extends ViewModel {
                         approval = snapshot.toObject(Approval.class);
                         if (approval != null) break;
                     }
-                    approvedPrice.setValue(new ResponseInfo<Approval>(false, approval));
+                    approvedPrice.setValue(new ServerResponse<Approval>(false, approval));
                 }
                 else {
-                    approvedPrice.setValue(new ResponseInfo<Approval>(true, "Price not Fetched"));
+                    approvedPrice.setValue(new ServerResponse<Approval>(true, "Price not Fetched"));
                 }
             }
         }).addOnFailureListener(new OnFailureListener() {

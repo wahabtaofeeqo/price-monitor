@@ -133,20 +133,22 @@
             <com.google.android.material.textfield.TextInputLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:hint="@string/type"
+                android:hint="@string/phone"
                 style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.Dense"
-                app:startIconDrawable="@drawable/ic_baseline_person"
+                app:startIconDrawable="@drawable/ic_baseline_phone"
                 app:boxBackgroundColor="@color/white"
                 app:boxCornerRadiusTopEnd="@dimen/_25sdp"
                 app:boxStrokeColor="@color/colorPrimaryDark"
-                app:endIconMode="dropdown_menu"
                 app:boxStrokeWidthFocused="1dp"
+                android:layout_marginBottom="@dimen/_16sdp"
                 app:hintTextColor="@color/dark">
 
-               <AutoCompleteTextView
-                   android:id="@+id/type"
-                   android:layout_width="match_parent"
-                   android:layout_height="wrap_content" />
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/phone"
+                    android:layout_width="match_parent"
+                    android:maxLines="1"
+                    android:inputType="number"
+                    android:layout_height="wrap_content" />
 
             </com.google.android.material.textfield.TextInputLayout>
 

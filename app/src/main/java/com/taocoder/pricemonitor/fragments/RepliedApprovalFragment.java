@@ -16,11 +16,9 @@ import android.widget.ProgressBar;
 
 import com.taocoder.pricemonitor.R;
 import com.taocoder.pricemonitor.adapters.ApprovalsStatusAdapter;
-import com.taocoder.pricemonitor.adapters.CompetitorPricesAdapter;
 import com.taocoder.pricemonitor.helpers.Utils;
 import com.taocoder.pricemonitor.models.Approval;
 import com.taocoder.pricemonitor.models.ApprovalsResult;
-import com.taocoder.pricemonitor.models.Price;
 import com.taocoder.pricemonitor.viewModels.MainViewModel;
 
 import java.util.ArrayList;
@@ -79,6 +77,7 @@ public class RepliedApprovalFragment extends Fragment {
                     Utils.toastMessage(getContext(), approvalsResult.getMessage());
                 }
                 else {
+                    approvals.clear();
                     approvals.addAll(approvalsResult.getApprovals());
                     adapter.notifyDataSetChanged();
                 }

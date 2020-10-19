@@ -4,7 +4,7 @@ import com.google.gson.annotations.SerializedName;
 
 import java.util.List;
 
-public class ResponseInfo<T> {
+public class ServerResponse<T> {
 
     private boolean error;
 
@@ -14,20 +14,20 @@ public class ResponseInfo<T> {
 
     private List<T> list;
 
-    public ResponseInfo(boolean status) {
+    public ServerResponse(boolean status) {
         this.error = status;
     }
 
-    public ResponseInfo(boolean status, String message) {
+    public ServerResponse(boolean status, String message) {
         this.error = status;
         this.message = message;
     }
 
-    public ResponseInfo(boolean status, T data) {
+    public ServerResponse(boolean status, T data) {
         this.data = data;
     }
 
-    public ResponseInfo(List<T> list) {
+    public ServerResponse(List<T> list) {
         this.list = list;
     }
 

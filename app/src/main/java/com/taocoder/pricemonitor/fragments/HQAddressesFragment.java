@@ -15,13 +15,9 @@ import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 
 import com.taocoder.pricemonitor.R;
-import com.taocoder.pricemonitor.adapters.ApprovalsStatusAdapter;
 import com.taocoder.pricemonitor.adapters.StationAddressAdapter;
 import com.taocoder.pricemonitor.helpers.Utils;
 import com.taocoder.pricemonitor.models.AddressesResult;
-import com.taocoder.pricemonitor.models.Approval;
-import com.taocoder.pricemonitor.models.ApprovalsResult;
-import com.taocoder.pricemonitor.models.ResponseInfo;
 import com.taocoder.pricemonitor.models.StationAddress;
 import com.taocoder.pricemonitor.viewModels.MainViewModel;
 
@@ -86,6 +82,7 @@ public class HQAddressesFragment extends Fragment {
                    Utils.toastMessage(getContext(), addressesResult.getMessage());
                }
                else {
+                   addresses.clear();
                    addresses.addAll(addressesResult.getAddresses());
                    adapter.notifyDataSetChanged();
                }

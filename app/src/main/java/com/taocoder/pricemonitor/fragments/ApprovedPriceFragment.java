@@ -16,7 +16,7 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.taocoder.pricemonitor.R;
 import com.taocoder.pricemonitor.models.Approval;
-import com.taocoder.pricemonitor.models.ResponseInfo;
+import com.taocoder.pricemonitor.models.ServerResponse;
 import com.taocoder.pricemonitor.viewModels.MainViewModel;
 
 /**
@@ -54,12 +54,12 @@ public class ApprovedPriceFragment extends Fragment {
         final FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
         viewModel.myApprovedPrice(user.getUid());
 
-        viewModel.getApprovedPrice().observe(requireActivity(), new Observer<ResponseInfo<Approval>>() {
+        viewModel.getApprovedPrice().observe(requireActivity(), new Observer<ServerResponse<Approval>>() {
             @Override
-            public void onChanged(ResponseInfo<Approval> responseInfo) {
-                if (responseInfo == null) return;
-                if (!responseInfo.isError()) {
-                    Approval approval = responseInfo.getData();
+            public void onChanged(ServerResponse<Approval> serverResponse) {
+                if (serverResponse == null) return;
+                if (!serverResponse.isError()) {
+                    Approval approval = serverResponse.getData();
                     price.setText(String.valueOf(approval.getPrice()));
                 }
                 progressBar.setVisibility(View.GONE);

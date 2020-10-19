@@ -8,7 +8,10 @@ public class User {
     private String name;
     private String email;
     private String type;
+    private String phone;
     private int status;
+
+    private String blockedBy;
 
     //Useful for update in firebase data
     private String docID;
@@ -59,5 +62,21 @@ public class User {
 
     public void setDocID(String docID) {
         this.docID = docID;
+    }
+
+    public String getPhone() {
+        return phone;
+    }
+
+    public void setPhone(String phone) {
+        this.phone = phone;
+    }
+
+    public String getBlockedBy() {
+        return blockedBy;
+    }
+
+    public void setBlockedBy(String blockedBy) {
+        this.blockedBy = blockedBy;
     }
 }

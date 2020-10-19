@@ -6,16 +6,16 @@ public class PricesResult {
 
     private boolean error;
     private String message;
-    private List<Price> prices;
+    private List<CompetitorPriceAndAddress> competitorPriceAndAddresses;
 
     public PricesResult(boolean error, String message) {
         this.error = error;
         this.message = message;
     }
 
-    public PricesResult(boolean error, List<Price> prices) {
+    public PricesResult(boolean error, List<CompetitorPriceAndAddress> competitorPriceAndAddresses) {
         this.error = error;
-        this.prices = prices;
+        this.competitorPriceAndAddresses = competitorPriceAndAddresses;
     }
 
     public boolean isError() {
@@ -34,11 +34,11 @@ public class PricesResult {
         this.message = message;
     }
 
-    public List<Price> getPrices() {
-        return prices;
+    public List<CompetitorPriceAndAddress> getCompetitorPriceAndAddresses() {
+        return competitorPriceAndAddresses;
     }
 
-    public void setPrices(List<Price> prices) {
-        this.prices = prices;
+    public void setCompetitorPriceAndAddresses(List<CompetitorPriceAndAddress> competitorPriceAndAddresses) {
+        this.competitorPriceAndAddresses = competitorPriceAndAddresses;
     }
 }

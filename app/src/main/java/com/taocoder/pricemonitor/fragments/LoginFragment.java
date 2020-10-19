@@ -26,7 +26,7 @@ import com.taocoder.pricemonitor.activities.ManagerHomeActivity;
 import com.taocoder.pricemonitor.helpers.SessionManager;
 import com.taocoder.pricemonitor.helpers.Utils;
 import com.taocoder.pricemonitor.interfaces.OnFragmentChangeListener;
-import com.taocoder.pricemonitor.models.ResponseInfo;
+import com.taocoder.pricemonitor.models.ServerResponse;
 import com.taocoder.pricemonitor.models.User;
 import com.taocoder.pricemonitor.viewModels.AccountViewModel;
 
@@ -107,17 +107,17 @@ public class LoginFragment extends Fragment implements Validator.ValidationListe
             }
         });
 
-        viewModel.getLoginResult().observe(requireActivity(), new Observer<ResponseInfo<User>>() {
+        viewModel.getLoginResult().observe(requireActivity(), new Observer<ServerResponse<User>>() {
             @Override
-            public void onChanged(ResponseInfo<User> userResponseInfo) {
-                if (userResponseInfo == null) return;
+            public void onChanged(ServerResponse<User> userServerResponse) {
+                if (userServerResponse == null) return;
 
-                if (userResponseInfo.isError()) {
-                    Utils.toastMessage(getContext(), userResponseInfo.getMessage());
+                if (userServerResponse.isError()) {
+                    Utils.toastMessage(getContext(), userServerResponse.getMessage());
                 }
                 else {
 
-                    User user = userResponseInfo.getData();
+                    User user = userServerResponse.getData();
                     sessionManager.setEmail(username.getText().toString().trim());
                     sessionManager.setType(user.getType());
                     sessionManager.setIsFirstTime(false);
